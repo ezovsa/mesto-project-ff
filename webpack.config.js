@@ -10,7 +10,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.js",
-    publicPath: "/mesto-project-ff/",
+    publicPath: "./",
     clean: true,
     assetModuleFilename: "images/[name][ext]",
   },
