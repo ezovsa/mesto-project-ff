@@ -32,7 +32,6 @@ function createCard({ name, link }, handleDelete) {
   imgEl.alt = name;
   titleEl.textContent = name;
   deleteBtn.addEventListener("click", () => handleDelete(cardEl));
-
   // лайк
   likeBtn.addEventListener("click", () =>
     likeBtn.classList.toggle("card__like-button_is-active")
