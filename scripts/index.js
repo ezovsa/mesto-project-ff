@@ -1,62 +1,73 @@
+// 1. DOM-узлы и шаблон
 const placesList = document.querySelector(".places__list");
-const cardTemplate = document
-  .querySelector("#card-template")
-  .content.querySelector(".card");
-const addBtn = document.querySelector(".profile__add-button");
-const formNew = document.querySelector(
-  '.popup_type_new-card form[name="new-place"]'
-);
-const imagePopup = document.querySelector(".popup_type_image");
+const cardTemplate = document.querySelector("#card-template").content.querySelector(".card");
+const profileAddButton = document.querySelector(".profile__add-button");
+const popupNewCard = document.querySelector(".popup_type_new-card");
+const formNewCard = popupNewCard.querySelector('form[name="new-place"]');
+const placeNameInput = formNewCard.elements["place-name"];
+const placeLinkInput = formNewCard.elements["link"];
+const popupImage = document.querySelector(".popup_type_image");
+const popupImageImg = popupImage.querySelector(".popup__image");
+const popupImageCaption = popupImage.querySelector(".popup__caption");
+// 2. Открытие/закрытие
 const openPopup = (popup) => popup.classList.add("popup_is-opened");
 const closePopup = (popup) => popup.classList.remove("popup_is-opened");
-
+//закрытие по крестику и сброс формы
 document.querySelectorAll(".popup__close").forEach((btn) =>
   btn.addEventListener("click", () => {
     const popup = btn.closest(".popup");
-    popup.querySelector("form")?.reset();
     closePopup(popup);
+    const form = popup.querySelector("form");
+    if (form) form.reset();
   })
 );
-
-addBtn.addEventListener("click", () => openPopup(formNew.closest(".popup")));
-
-const createCard = ({ name, link }) => {
-  const card = cardTemplate.cloneNode(true);
-  const img = card.querySelector(".card__image");
-  const like = card.querySelector(".card__like-button");
-
-  img.src = link;
-  img.alt = name;
-  card.querySelector(".card__title").textContent = name;
-
-  // удаление
-  card
-    .querySelector(".card__delete-button")
-    .addEventListener("click", () => card.remove());
+//создания карточки
+function createCard({ name, link }, handleDelete) {
+  const cardEl = cardTemplate.cloneNode(true);
+  const imgEl = cardEl.querySelector(".card__image");
+  const titleEl = cardEl.querySelector(".card__title");
+  const likeBtn = cardEl.querySelector(".card__like-button");
+  const deleteBtn = cardEl.querySelector(".card__delete-button");
+  imgEl.src = link;
+  imgEl.alt = name;
+  titleEl.textContent = name;
+  deleteBtn.addEventListener("click", () => handleDelete(cardEl));
 
   // лайк
-  like.addEventListener("click", () =>
-    like.classList.toggle("card__like-button_is-active")
+  likeBtn.addEventListener("click", () =>
+    likeBtn.classList.toggle("card__like-button_is-active")
   );
 
-  img.addEventListener("click", () => {
-    const imgPopupEl = imagePopup.querySelector(".popup__image");
-    const cap = imagePopup.querySelector(".popup__caption");
-    imgPopupEl.src = link;
-    imgPopupEl.alt = name;
-    cap.textContent = name;
-    openPopup(imagePopup);
+  imgEl.addEventListener("click", () => {
+    popupImageImg.src = link;
+    popupImageImg.alt = name;
+    popupImageCaption.textContent = name;
+    openPopup(popupImage);
   });
 
-  return card;
-};
+  return cardEl;
+}
 
-initialCards.forEach((data) => placesList.append(createCard(data)));
+function removeCard(cardEl) {
+  cardEl.remove();
+}
 
-formNew.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const { "place-name": name, link } = formNew.elements;
-  placesList.prepend(createCard({ name: name.value, link: link.value }));
-  formNew.reset();
-  closePopup(formNew.closest(".popup"));
+// 6 исходных карточек при загрузке
+initialCards.forEach((data) => {
+  placesList.append(createCard(data, removeCard));
+});
+
+profileAddButton.addEventListener("click", () => openPopup(popupNewCard));
+
+formNewCard.addEventListener("submit", (evt) => {
+  evt.preventDefault();
+
+  const cardData = {
+    name: placeNameInput.value,
+    link: placeLinkInput.value,
+  };
+
+  placesList.prepend(createCard(cardData, removeCard));
+  closePopup(popupNewCard);
+  formNewCard.reset();
 });
