@@ -1,9 +1,13 @@
-// Функция для работы с карточками
+
+
+// Шаблон карточки ищем один раз
+const cardTemplate = document
+  .querySelector("#card-template")
+  .content.querySelector(".card");
+
+
 export function createCard({ name, link }, { onDelete, onLike, onImageClick }) {
-  const template = document
-    .querySelector("#card-template")
-    .content.querySelector(".card");
-  const cardEl = template.cloneNode(true);
+  const cardEl = cardTemplate.cloneNode(true);
   const img = cardEl.querySelector(".card__image");
   const title = cardEl.querySelector(".card__title");
   const likeBtn = cardEl.querySelector(".card__like-button");
@@ -18,4 +22,14 @@ export function createCard({ name, link }, { onDelete, onLike, onImageClick }) {
   img.addEventListener("click", () => onImageClick({ name, link }));
 
   return cardEl;
+}
+
+
+export function removeCard(cardEl) {
+  cardEl.remove();
+}
+
+
+export function toggleLike(button) {
+  button.classList.toggle("card__like-button_is-active");
 }

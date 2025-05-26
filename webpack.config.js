@@ -1,8 +1,7 @@
 // webpack.config.js
-// webpack.config.js
-const path                 = require('path');
-const HtmlWebpackPlugin    = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
@@ -10,50 +9,42 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.js",
-    publicPath: "./",
+    publicPath: "./", // относительные URL для GitHub Pages
     clean: true,
     assetModuleFilename: "images/[name][ext]",
   },
   module: {
     rules: [
       {
-        test: /\.css$/i, // теперь без include — все .css
+        test: /\.css$/i,
         use: [
-          MiniCssExtractPlugin.loader, // вытаскиваем CSS в styles.css
+          MiniCssExtractPlugin.loader, // выносим CSS в отдельный файл
           "css-loader", // обрабатываем @import и url()
         ],
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/i,
-        type: "asset/resource",
+        type: "asset/resource", // копируем картинки в dist/images
         generator: { filename: "images/[name][ext]" },
       },
       {
         test: /\.(woff2?|ttf|eot)$/i,
-        type: "asset/resource",
+        type: "asset/resource", // копируем шрифты в dist/fonts
         generator: { filename: "fonts/[name][ext]" },
       },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, "src/pages/index.html"),
+      template: "./src/pages/index.html",
       filename: "index.html",
       inject: "body",
     }),
-    new MiniCssExtractPlugin({
-      filename: "styles.css",
-    }),
+    new MiniCssExtractPlugin({ filename: "styles.css" }),
     new CopyWebpackPlugin({
-      patterns: [{ from: "src/images", to: "images" }],
-    }),
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, "src/pages/index.html"),
-      filename: "index.html",
-      inject: "body",
-    }),
-    new MiniCssExtractPlugin({
-      filename: "styles.css",
+      patterns: [
+        { from: "src/images", to: "images" },
+      ],
     }),
   ],
   devServer: {

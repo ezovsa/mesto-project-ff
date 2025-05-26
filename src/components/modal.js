@@ -3,11 +3,9 @@
 // Функции для работы с модальными окнами
 // Открывает попап и навешивает слушатели Esc, overlay, крестик
 export function openModal(popup) {
-  popup.classList.add('popup_is-opened');
-  document.addEventListener('keydown', handleEscClose);
-  popup.addEventListener('mousedown', handleOverlayClick);
-  const closeBtn = popup.querySelector('.popup__close');
-  if (closeBtn) closeBtn.addEventListener('click', () => closeModal(popup));
+  popup.classList.add("popup_is-opened");
+  document.addEventListener("keydown", handleEscClose);
+  popup.addEventListener("mousedown", handleOverlayClick);
 }
 
 // Закрывает попап и снимает слушатели
