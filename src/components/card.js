@@ -1,35 +1,36 @@
 
 
 // Шаблон карточки ищем один раз
-const cardTemplate = document
+const cardTemplateElement = document
   .querySelector("#card-template")
   .content.querySelector(".card");
 
 
-export function createCard({ name, link }, { onDelete, onLike, onImageClick }) {
-  const cardEl = cardTemplate.cloneNode(true);
-  const img = cardEl.querySelector(".card__image");
-  const title = cardEl.querySelector(".card__title");
-  const likeBtn = cardEl.querySelector(".card__like-button");
-  const deleteBtn = cardEl.querySelector(".card__delete-button");
+  export function createCard(data, { onDelete, onLike, onImageClick }) {
+    const { name, link } = data;
+    const cardElement = cardTemplateElement.cloneNode(true);
+    const imageElement = cardElement.querySelector(".card__image");
+    const titleElement = cardElement.querySelector(".card__title");
+    const likeButton = cardElement.querySelector(".card__like-button");
+    const deleteButton = cardElement.querySelector(".card__delete-button");
 
-  title.textContent = name;
-  img.src = link;
-  img.alt = name;
+    titleElement.textContent = name;
+    imageElement.src = link;
+    imageElement.alt = name;
 
-  deleteBtn.addEventListener("click", () => onDelete(cardEl));
-  likeBtn.addEventListener("click", () => onLike(likeBtn));
-  img.addEventListener("click", () => onImageClick({ name, link }));
+    deleteButton.addEventListener("click", () => onDelete(cardElement));
+    likeButton.addEventListener("click", () => onLike(likeButton));
+    imageElement.addEventListener("click", () => onImageClick({ name, link }));
 
-  return cardEl;
-}
-
-
-export function removeCard(cardEl) {
-  cardEl.remove();
-}
+    return cardElement;
+  }
 
 
-export function toggleLike(button) {
-  button.classList.toggle("card__like-button_is-active");
-}
+  export function deleteCard(cardElement) {
+    cardElement.remove();
+  }
+
+
+  export function toggleCardLike(likeButton) {
+    likeButton.classList.toggle("card__like-button_is-active");
+  }
