@@ -22,6 +22,9 @@
   },
   "homepage": "https://github.com/OB1-WAN-KENOBI/mesto-project-ff#readme",
   "devDependencies": {
+    "@babel/core": "^7.27.3",
+    "@babel/preset-env": "^7.27.2",
+    "babel-loader": "^10.0.0",
     "copy-webpack-plugin": "^13.0.0",
     "css-loader": "^7.1.2",
     "gh-pages": "^6.3.0",
@@ -31,5 +34,9 @@
     "webpack": "^5.99.7",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.1"
+  },
+  "dependencies": {
+    "core-js": "^3.42.0",
+    "regenerator-runtime": "^0.14.1"
   }
 }

@@ -16,6 +16,14 @@ module.exports = {
   module: {
     rules: [
       {
+        // регулярное выражение, которое ищет все js файлы
+        test: /\.js$/,
+        // при обработке этих файлов нужно использовать babel-loader
+        use: "babel-loader",
+        // исключает папку node_modules, файлы в ней обрабатывать не нужно
+        exclude: /node_modules/,
+      },
+      {
         test: /\.css$/i,
         use: [
           MiniCssExtractPlugin.loader, // выносим CSS в отдельный файл
@@ -42,9 +50,7 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({ filename: "styles.css" }),
     new CopyWebpackPlugin({
-      patterns: [
-        { from: "src/images", to: "images" },
-      ],
+      patterns: [{ from: "src/images", to: "images" }],
     }),
   ],
   devServer: {
