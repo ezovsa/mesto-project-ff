@@ -165,7 +165,6 @@ Promise.all([api.getUserInfo(), api.getInitialCards()])
     // Ошибка при загрузке данных
   });
 
-
 // Редактирования профиля
 buttonEditProfile.addEventListener("click", () => {
   inputName.value = profileName.textContent;
