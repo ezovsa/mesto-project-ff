@@ -3,7 +3,10 @@ const cardTemplateElement = document
   .querySelector("#card-template")
   .content.querySelector(".card");
 
-export function createCard(data, { onDelete, onLike, onImageClick }) {
+export function createCard(
+  data,
+  { onDelete, onLike, onImageClick, currentUserId }
+) {
   const cardElement = cardTemplateElement.cloneNode(true);
   const imageElement = cardElement.querySelector(".card__image");
   const titleElement = cardElement.querySelector(".card__title");
@@ -14,7 +17,15 @@ export function createCard(data, { onDelete, onLike, onImageClick }) {
   imageElement.src = data.link;
   imageElement.alt = data.name;
 
-  deleteButton.addEventListener("click", () => onDelete(cardElement));
+  // Показываем корзину только на своих карточках
+  if (!data.owner || data.owner._id !== currentUserId) {
+    deleteButton.style.display = "none";
+  } else {
+    deleteButton.addEventListener("click", () =>
+      onDelete(cardElement, data._id)
+    );
+  }
+
   likeButton.addEventListener("click", () => onLike(likeButton));
   imageElement.addEventListener("click", () => onImageClick(data));
 
