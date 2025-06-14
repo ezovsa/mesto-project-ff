@@ -181,3 +181,30 @@ if (confirmDeleteButton) {
     }
   });
 }
+
+const avatarPopup = document.querySelector(".popup_type_edit-avatar");
+const avatarForm = avatarPopup.querySelector('form[name="edit-avatar"]');
+const avatarInput = avatarForm.elements["avatar"];
+const profileImage = document.querySelector(".profile__image");
+const avatarEditIcon = document.querySelector(".profile__avatar-edit");
+
+// Открытие попапа смены аватара
+profileImage.addEventListener("click", () => {
+  clearValidation(avatarForm, validationConfig);
+  avatarForm.reset();
+  openModal(avatarPopup);
+});
+
+// Отправка формы смены аватара
+avatarForm.addEventListener("submit", (evt) => {
+  evt.preventDefault();
+  api
+    .updateAvatar({ avatar: avatarInput.value })
+    .then((userData) => {
+      profileImage.style.backgroundImage = `url('${userData.avatar}')`;
+      closeModal(avatarPopup);
+    })
+    .catch((err) => {
+      console.log(`Ошибка при обновлении аватара: ${err}`);
+    });
+});
