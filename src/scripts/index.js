@@ -1,7 +1,18 @@
 import "../pages/index.css";
-import { initialCards } from "./cards.js";
 import { openModal, closeModal } from "../components/modal.js";
 import { createCard, deleteCard, toggleCardLike } from "../components/card.js";
+import { enableValidation, clearValidation } from "../components/validation.js";
+import api from "../components/api.js";
+
+// Настройки валидации
+const validationConfig = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__error_visible",
+};
 
 // === DOM-элементы ===
 // Редактирование профиля
@@ -42,6 +53,12 @@ function handleProfileSubmit(evt) {
   closeModal(popupEditProfile);
 }
 
+// Добавление карточки
+buttonAddCard.addEventListener("click", () => {
+  clearValidation(formAddCard, validationConfig);
+  openModal(popupAddCard);
+});
+
 // Обработчик формы новой карточки
 function handleAddCardSubmit(evt) {
   evt.preventDefault();
@@ -50,8 +67,8 @@ function handleAddCardSubmit(evt) {
   const card = createCard(
     { name, link },
     {
-      onDelete: removeCard,
-      onLike: toggleLike,
+      onDelete: deleteCard,
+      onLike: toggleCardLike,
       onImageClick: ({ name, link }) => {
         popupImageEl.src = link;
         popupImageEl.alt = name;
@@ -62,36 +79,52 @@ function handleAddCardSubmit(evt) {
   );
   cardsContainer.prepend(card);
   formAddCard.reset();
+  clearValidation(formAddCard, validationConfig);
   closeModal(popupAddCard);
 }
 
-// Стартовые карточки
-initialCards.forEach((data) => {
-  const card = createCard(data, {
-    onDelete: deleteCard,
-    onLike: toggleCardLike,
-    onImageClick: ({ name, link }) => {
-      popupImageEl.src = link;
-      popupImageEl.alt = name;
-      popupCaption.textContent = name;
-      openModal(popupImage);
-    },
+// Загрузка данных пользователя и карточек
+Promise.all([api.getUserInfo(), api.getInitialCards()])
+  .then(([userData, cards]) => {
+    console.log("Данные пользователя:", userData);
+    console.log("Карточки:", cards);
+
+    // Обновляем данные профиля
+    profileName.textContent = userData.name;
+    profileJob.textContent = userData.about;
+
+    // Отображаем карточки
+    cards.forEach((cardData) => {
+      const card = createCard(cardData, {
+        onDelete: deleteCard,
+        onLike: toggleCardLike,
+        onImageClick: ({ name, link }) => {
+          popupImageEl.src = link;
+          popupImageEl.alt = name;
+          popupCaption.textContent = name;
+          openModal(popupImage);
+        },
+      });
+      cardsContainer.append(card);
+    });
+  })
+  .catch((err) => {
+    console.log(`Ошибка при загрузке данных: ${err}`);
   });
-  cardsContainer.append(card);
-});
 
 // Редактирования профиля
 buttonEditProfile.addEventListener("click", () => {
   inputName.value = profileName.textContent;
   inputJob.value = profileJob.textContent;
+  clearValidation(formEditProfile, validationConfig);
   openModal(popupEditProfile);
 });
 
 // Обработчик профиля
 formEditProfile.addEventListener("submit", handleProfileSubmit);
 
-// Открытие попапа добавления карточки
-buttonAddCard.addEventListener("click", () => openModal(popupAddCard));
-
 // Обработчик новой карточки
 formAddCard.addEventListener("submit", handleAddCardSubmit);
+
+// Включаем валидацию форм
+enableValidation(validationConfig);
