@@ -72,6 +72,26 @@ class Api {
       return Promise.reject(`Ошибка: ${res.status}`);
     });
   }
+
+  // Поставить лайк
+  likeCard(cardId) {
+    return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+      method: "PUT",
+      headers: this._headers,
+    }).then((res) =>
+      res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`)
+    );
+  }
+
+  // Убрать лайк
+  unlikeCard(cardId) {
+    return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+      method: "DELETE",
+      headers: this._headers,
+    }).then((res) =>
+      res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`)
+    );
+  }
 }
 
 // Создаем экземпляр класса Api

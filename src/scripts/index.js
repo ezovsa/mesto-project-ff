@@ -102,6 +102,20 @@ let currentUserId = null;
 let cardToDelete = null;
 
 // Загрузка данных пользователя и карточек
+function handleLike(cardId, likeButton, likeCount, isLiked) {
+  const apiMethod = isLiked ? api.unlikeCard : api.likeCard;
+  apiMethod
+    .call(api, cardId)
+    .then((updatedCard) => {
+      likeButton.classList.toggle(
+        "card__like-button_is-active",
+        updatedCard.likes.some((user) => user._id === currentUserId)
+      );
+      likeCount.textContent = updatedCard.likes.length;
+    })
+    .catch((err) => console.log(`Ошибка при изменении лайка: ${err}`));
+}
+
 Promise.all([api.getUserInfo(), api.getInitialCards()])
   .then(([userData, cards]) => {
     currentUserId = userData._id;
@@ -114,7 +128,7 @@ Promise.all([api.getUserInfo(), api.getInitialCards()])
           cardToDelete = { cardElement, cardId };
           openModal(popupDeleteCard);
         },
-        onLike: toggleCardLike,
+        onLike: handleLike,
         onImageClick: ({ name, link }) => {
           popupImageEl.src = link;
           popupImageEl.alt = name;
