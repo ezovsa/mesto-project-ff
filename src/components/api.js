@@ -6,11 +6,9 @@ class Api {
 
   // Получение информации о пользователе
   getUserInfo() {
-    console.log("Запрос данных пользователя...");
     return fetch(`${this._baseUrl}/users/me`, {
       headers: this._headers,
     }).then((res) => {
-      console.log("Ответ сервера (пользователь):", res.status);
       if (res.ok) {
         return res.json();
       }
@@ -20,11 +18,9 @@ class Api {
 
   // Получение карточек с сервера
   getInitialCards() {
-    console.log("Запрос карточек...");
     return fetch(`${this._baseUrl}/cards`, {
       headers: this._headers,
     }).then((res) => {
-      console.log("Ответ сервера (карточки):", res.status);
       if (res.ok) {
         return res.json();
       }

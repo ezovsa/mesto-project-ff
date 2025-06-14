@@ -45,11 +45,17 @@ document.querySelectorAll(".popup__close").forEach((btn) => {
   btn.addEventListener("click", () => closeModal(popup));
 });
 
+function renderLoading(isLoading, button, defaultText = "Сохранить") {
+  button.textContent = isLoading ? "Сохранение..." : defaultText;
+}
+
 // Обработчик формы профиля
 function handleProfileSubmit(evt) {
   evt.preventDefault();
   const name = inputName.value;
   const about = inputJob.value;
+  const saveButton = formEditProfile.querySelector(".popup__button");
+  renderLoading(true, saveButton);
 
   api
     .updateUserInfo({ name, about })
@@ -59,7 +65,10 @@ function handleProfileSubmit(evt) {
       closeModal(popupEditProfile);
     })
     .catch((err) => {
-      console.log(`Ошибка при обновлении профиля: ${err}`);
+      // Ошибка при обновлении профиля
+    })
+    .finally(() => {
+      renderLoading(false, saveButton);
     });
 }
 
@@ -74,19 +83,25 @@ function handleAddCardSubmit(evt) {
   evt.preventDefault();
   const name = formAddCard.elements["place-name"].value;
   const link = formAddCard.elements["link"].value;
+  const saveButton = formAddCard.querySelector(".popup__button");
+  renderLoading(true, saveButton);
 
   api
     .addCard({ name, link })
     .then((cardData) => {
       const card = createCard(cardData, {
-        onDelete: deleteCard,
-        onLike: toggleCardLike,
+        onDelete: (cardElement, cardId) => {
+          cardToDelete = { cardElement, cardId };
+          openModal(popupDeleteCard);
+        },
+        onLike: handleLike,
         onImageClick: ({ name, link }) => {
           popupImageEl.src = link;
           popupImageEl.alt = name;
           popupCaption.textContent = name;
           openModal(popupImage);
         },
+        currentUserId,
       });
       cardsContainer.prepend(card);
       formAddCard.reset();
@@ -94,7 +109,10 @@ function handleAddCardSubmit(evt) {
       closeModal(popupAddCard);
     })
     .catch((err) => {
-      console.log(`Ошибка при добавлении карточки: ${err}`);
+      // Ошибка при добавлении карточки
+    })
+    .finally(() => {
+      renderLoading(false, saveButton);
     });
 }
 
@@ -113,7 +131,9 @@ function handleLike(cardId, likeButton, likeCount, isLiked) {
       );
       likeCount.textContent = updatedCard.likes.length;
     })
-    .catch((err) => console.log(`Ошибка при изменении лайка: ${err}`));
+    .catch((err) => {
+      // Ошибка при изменении лайка
+    });
 }
 
 Promise.all([api.getUserInfo(), api.getInitialCards()])
@@ -121,6 +141,7 @@ Promise.all([api.getUserInfo(), api.getInitialCards()])
     currentUserId = userData._id;
     profileName.textContent = userData.name;
     profileJob.textContent = userData.about;
+    profileImage.style.backgroundImage = `url('${userData.avatar}')`;
 
     cards.forEach((cardData) => {
       const card = createCard(cardData, {
@@ -141,8 +162,9 @@ Promise.all([api.getUserInfo(), api.getInitialCards()])
     });
   })
   .catch((err) => {
-    console.log(`Ошибка при загрузке данных: ${err}`);
+    // Ошибка при загрузке данных
   });
+
 
 // Редактирования профиля
 buttonEditProfile.addEventListener("click", () => {
@@ -176,7 +198,7 @@ if (confirmDeleteButton) {
           cardToDelete = null;
         })
         .catch((err) => {
-          console.log(`Ошибка при удалении карточки: ${err}`);
+          // Ошибка при удалении карточки
         });
     }
   });
@@ -198,6 +220,9 @@ profileImage.addEventListener("click", () => {
 // Отправка формы смены аватара
 avatarForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
+  const saveButton = avatarForm.querySelector(".popup__button");
+  renderLoading(true, saveButton);
+
   api
     .updateAvatar({ avatar: avatarInput.value })
     .then((userData) => {
@@ -205,6 +230,9 @@ avatarForm.addEventListener("submit", (evt) => {
       closeModal(avatarPopup);
     })
     .catch((err) => {
-      console.log(`Ошибка при обновлении аватара: ${err}`);
+      // Ошибка при обновлении аватара
+    })
+    .finally(() => {
+      renderLoading(false, saveButton);
     });
 });
