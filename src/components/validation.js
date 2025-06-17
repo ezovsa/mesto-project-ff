@@ -1,8 +1,4 @@
-export const form = document.querySelector(".popup__form");
-const popupsInput = form.querySelector(".popup__input");
-
-// Настройки валидации
-const validationSettings = {
+export const validationSettings = {
   formSelector: ".popup__form",
   inputSelector: ".popup__input",
   submitButtonSelector: ".popup__button",
@@ -51,16 +47,6 @@ const checkInputValidity = (formElement, inputElement, validationConfig) => {
     hideInputError(formElement, inputElement, validationConfig);
   }
 };
-
-form.addEventListener("submit", function (evt) {
-  evt.preventDefault();
-});
-
-popupsInput.addEventListener("input", function (evt) {
-  // Выведем в консоль значение свойства validity.valid поля ввода,
-  // на котором слушаем событие input
-  checkInputValidity(form, popupsInput, validationSettings);
-});
 
 const hasInvalidInput = (inputList) => {
   return inputList.some((inputElement) => {

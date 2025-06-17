@@ -2,7 +2,10 @@
 
 // Открывает попап и навешивает слушатели Esc, overlay, крестик
 export function openModal(popupElement) {
-  popupElement.classList.add("popup_is-opened");
+  popupElement.classList.add("popup_is-animated"); // сначала анимация
+  setTimeout(() => {
+    popupElement.classList.add("popup_is-opened"); // потом только открытие
+  }, 1);
   document.addEventListener("keydown", onEscapeKey);
   popupElement.addEventListener("mousedown", onOverlayClick);
 }
@@ -10,6 +13,10 @@ export function openModal(popupElement) {
 // Закрывает попап и снимает слушатели
 export function closeModal(popupElement) {
   popupElement.classList.remove("popup_is-opened");
+  // Ждём окончания анимации, затем убираем анимационный класс
+  setTimeout(() => {
+    popupElement.classList.remove("popup_is-animated");
+  }, 600); // 600ms — как в transition в CSS
   document.removeEventListener("keydown", onEscapeKey);
   popupElement.removeEventListener("mousedown", onOverlayClick);
 }
