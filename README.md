@@ -24,7 +24,7 @@
 
 1. Клонируйте репозиторий:
    ```
-   git clone https://github.com/OB1-WAN-KENOBI/mesto-project-ff.git
+   https://github.com/ezovsa/mesto-project-ff.git
    ```
 2. Установите зависимости:
    ```
