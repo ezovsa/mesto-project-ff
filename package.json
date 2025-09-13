@@ -7,20 +7,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run build && webpack serve --mode development --open",
     "build": "webpack --mode production",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/OB1-WAN-KENOBI/mesto-project-ff.git"
+    "predeploy": "npm run build"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/OB1-WAN-KENOBI/mesto-project-ff/issues"
-  },
-  "homepage": "https://github.com/OB1-WAN-KENOBI/mesto-project-ff#readme",
   "devDependencies": {
     "@babel/core": "^7.27.3",
     "@babel/preset-env": "^7.27.2",
